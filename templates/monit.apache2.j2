@@ -1,0 +1,8 @@
+## Check apache
+   check process apache2 with pidfile /var/run/apache2/apache2.pid
+     start program = "/etc/init.d/apache2 start" with timeout 60 seconds
+     stop program  = "/etc/init.d/apache2 stop"
+     if failed host {{ ansible_role_monit.host }} port 80 protocol http
+        then restart
+     if 5 restarts within 5 cycles
+        then timeout

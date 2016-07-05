@@ -1,0 +1,17 @@
+---
+# defaults file for ansible-role-monit
+
+site:
+  app: site
+  host: localhost.vagrant
+  user: administrator
+  password: whatever
+
+ansible_role_monit:
+  email: whoever@wherever.com
+  port: 9999
+  user: "{{ site.user }}"
+  password: "{{ site.password }}"
+  domain: "monit.{{ site.host }}"
+  host: "{{ site.host }}"
+

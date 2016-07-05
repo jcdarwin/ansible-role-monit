@@ -1,0 +1,16 @@
+---
+# This Playbook deploys monit!
+
+- hosts: all
+  remote_user: root
+  become: true
+  become_user: root
+  tags: monit
+  handlers:
+   - include: handlers/main.yml
+
+  tasks:
+  - include: tasks/monit_packages.yml
+  - include: tasks/monit_configure.yml
+  - include: tasks/monit_templates.yml
+  - include: tasks/monit_apache.yml

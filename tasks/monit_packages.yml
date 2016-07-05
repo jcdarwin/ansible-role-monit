@@ -1,0 +1,12 @@
+---
+# ===============================================================
+# packages: install the necessary packages
+# ===============================================================
+
+- name: Install packages
+  apt: pkg={{ item }}
+    state=installed
+    update_cache=true
+  with_items:
+    - monit
+  tags: packages

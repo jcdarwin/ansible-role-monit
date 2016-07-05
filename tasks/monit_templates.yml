@@ -1,0 +1,22 @@
+---
+# ===============================================================
+# templates: install monit templates
+# ===============================================================
+
+- include_vars: "defaults/main.yml"
+
+- name: Configure the monit.apache file
+  action: template
+    src=templates/monit.apache2.j2
+    dest=/etc/monit/conf.d/monit.apache2
+    mode=0644
+  tags: templates
+
+- name: Configure the monit.mysql file
+  action: template
+    src=templates/monit.mysql.j2
+    dest=/etc/monit/conf.d/monit.mysql
+    mode=0644
+  notify:
+    - restart monit
+  tags: templates

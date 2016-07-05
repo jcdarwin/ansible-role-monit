@@ -1,0 +1,62 @@
+---
+
+- include_vars: "defaults/main.yml"
+
+- name: Activate apache modules
+  command: a2enmod {{ item }}
+  notify:
+  - restart apache
+  with_items:
+  - proxy
+  - proxy_http
+  tags: apache
+
+- name: Configure the virtual host with our environment
+  action: template
+    src=templates/monit.conf.j2
+    dest=/etc/apache2/sites-available/{{ ansible_role_monit.domain }}.conf
+    mode=0644
+  tags: apache
+
+- name: Ensure our log directory exists
+  file: path=/var/log/apache2/{{ ansible_role_monit.domain }}
+    state=directory
+  tags: apache
+
+- name: Activate our virtualhost conf
+  action: command a2ensite {{ ansible_role_monit.domain }}.conf
+  tags: apache
+
+- name: Check that our virtualhost conf is valid
+  action: command apache2ctl configtest
+  register: result
+  ignore_errors: True
+  tags: apache
+
+- name: Rolling back - Removing our virtualhost
+  action: command a2dissite {{ ansible_role_monit.domain }}.conf
+  when: result|failed
+  tags: apache
+
+- name: Rolling back - Ending playbook
+  action: fail msg="Configuration file is not valid. Please check that before re-running the playbook."
+  when: result|failed
+  tags: apache
+
+- name: Create fqdn configuration file (prevent apache error message 'Could not reliably determine the server's fully qualified domain name ...')
+  copy:
+    dest="/etc/apache2/conf-available/{{ ansible_role_monit.domain }}.conf"
+    content="ServerName localhost"
+  notify:
+    - restart apache
+  tags: apache
+
+- name: Activate our conf
+  action: command a2enconf {{ ansible_role_monit.domain }}.conf
+  tags: apache
+
+- name: Make sure Apache is up and running
+  service:
+    name=apache2
+    state=started
+  tags: apache
