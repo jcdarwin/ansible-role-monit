@@ -79,6 +79,13 @@ Running the playbook:
     # Check that php has been installed
     ansible -m shell -a 'monit -V' all -i ../vagrant/ansible/hosts
 
+To see the results in the browser (presuming you're using the defaults):
+
+	# Add the subdomain to our hosts file
+	echo "127.0.0.1	monit.localhost.vagrant"
+
+	# then visit: http://monit.localhost.vagrant:9999
+
 License
 -------
 
