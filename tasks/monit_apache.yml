@@ -19,7 +19,7 @@
   when: scheme != "https"
   tags: apache
 
-- name: Configure the virtual host with our environment for http
+- name: Configure the virtual host with our environment for https
   action: template
     src=templates/https.monit.conf.j2
     dest=/etc/apache2/sites-available/{{ ansible_role_monit.domain }}.conf
