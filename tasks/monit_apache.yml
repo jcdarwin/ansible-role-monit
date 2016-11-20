@@ -11,11 +11,20 @@
   - proxy_http
   tags: apache
 
-- name: Configure the virtual host with our environment
+- name: Configure the virtual host with our environment for http
   action: template
-    src=templates/monit.conf.j2
+    src=templates/http.monit.conf.j2
     dest=/etc/apache2/sites-available/{{ ansible_role_monit.domain }}.conf
     mode=0644
+  when: scheme != "https"
+  tags: apache
+
+- name: Configure the virtual host with our environment for http
+  action: template
+    src=templates/https.monit.conf.j2
+    dest=/etc/apache2/sites-available/{{ ansible_role_monit.domain }}.conf
+    mode=0644
+  when: scheme == "https"
   tags: apache
 
 - name: Ensure our log directory exists

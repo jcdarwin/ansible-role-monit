@@ -1,0 +1,22 @@
+<VirtualHost *:80>
+    DocumentRoot "/etc/monit/"
+    ServerName  {{ ansible_role_monit.domain }}
+    ServerAlias {{ ansible_role_monit.domain }}
+    <Directory "/etc/monit">
+        Options -Indexes
+    </Directory>
+
+    <Proxy>
+        Order deny,allow
+        Allow from all
+    </Proxy>
+
+    # Proxy {{ ansible_role_monit.domain }} requests through to {{ ansible_role_monit.port }}.
+    ProxyPass /.well-known/ !
+    ProxyPass / http://{{ ansible_role_monit.domain }}:{{ ansible_role_monit.port }}/
+    ProxyPassReverse / http://{{ ansible_role_monit.domain }}:{{ ansible_role_monit.port }}/
+    ProxyTimeout 900
+
+    CustomLog /var/log/apache2/{{ ansible_role_monit.domain }}/access.log combined
+    ErrorLog /var/log/apache2/{{ ansible_role_monit.domain }}/error.log
+</VirtualHost>

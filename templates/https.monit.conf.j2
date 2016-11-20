@@ -1,0 +1,41 @@
+<VirtualHost *:80>
+    DocumentRoot "/etc/monit/"
+    ServerName  {{ ansible_role_monit.domain }}
+    ServerAlias {{ ansible_role_monit.domain }}
+
+    RewriteCond %{HTTP_URI} !^/.well-known/.* [NC]
+    Redirect 301 / https://{{ ansible_role_monit.domain }}/
+
+    # Allow certbot access to confirm the domain
+    <Directory "/etc/monit/.well-known">
+        Require all granted
+    </Directory>
+</VirtualHost>
+
+<VirtualHost *:443>
+    DocumentRoot "/etc/monit/"
+    ServerName  {{ ansible_role_monit.domain }}
+    ServerAlias {{ ansible_role_monit.domain }}
+    <Directory "/etc/monit">
+        Options -Indexes
+    </Directory>
+
+    <Proxy>
+        Order deny,allow
+        Allow from all
+    </Proxy>
+
+    # Proxy {{ ansible_role_monit.domain }} requests through to {{ ansible_role_monit.port }}.
+    ProxyPass /.well-known/ !
+    ProxyPass / http://{{ ansible_role_monit.domain }}:{{ ansible_role_monit.port }}/
+    ProxyPassReverse / http://{{ ansible_role_monit.domain }}:{{ ansible_role_monit.port }}/
+    ProxyTimeout 900
+
+    CustomLog /var/log/apache2/{{ ansible_role_monit.domain }}/access.log combined
+    ErrorLog /var/log/apache2/{{ ansible_role_monit.domain }}/error.log
+
+    SSLCertificateFile /etc/letsencrypt/live/monit.journalsurf.co.nz/cert.pem
+    SSLCertificateKeyFile /etc/letsencrypt/live/monit.journalsurf.co.nz/privkey.pem
+    Include /opt/certbot/certbot-apache/certbot_apache/options-ssl-apache.conf
+    SSLCertificateChainFile /etc/letsencrypt/live/monit.journalsurf.co.nz/chain.pem
+</VirtualHost>

@@ -83,8 +83,19 @@ Running the playbook:
 
     ansible-playbook -l all main.yml -i ../vagrant/ansible/hosts
 
-    # Check that php has been installed
+    # Check that monit has been installed
     ansible -m shell -a 'monit -V' all -i ../vagrant/ansible/hosts
+
+If you want to enable ssl using certbot:
+
+    # Manually, on the server:
+    /opt/certbot/certbot-auto certonly --webroot -w /etc/monit/ -d monit.whatever.co.nz
+
+    # This should result in a cert installed at:
+    /etc/letsencrypt/live/monit.whatever.co.nz/fullchain.pem
+
+    # Run our playbook to install monit using port 80 and port 443
+    ansible-playbook -l all main.yml -i ../vagrant/ansible/hosts --extra-vars "scheme=https"
 
 To see the results in the browser (presuming you're using the defaults):
 
