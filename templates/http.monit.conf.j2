@@ -2,8 +2,14 @@
     DocumentRoot "/etc/monit/"
     ServerName  {{ ansible_role_monit.domain }}
     ServerAlias {{ ansible_role_monit.domain }}
+
     <Directory "/etc/monit">
         Options -Indexes
+    </Directory>
+
+    # Allow certbot access to confirm the domain
+    <Directory "/etc/monit/.well-known">
+        Require all granted
     </Directory>
 
     <Proxy>
