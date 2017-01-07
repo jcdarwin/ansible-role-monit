@@ -53,7 +53,18 @@
 #                backup.bar.baz port 10025,  # backup mailserver on port 10025
 #                localhost                   # fallback relay
 #
+
+{% if ansible_role_monit.use_smtp %}
+# We'll use an SMTP server.
+# Note that monit 5.17+ will need "using ssl" instead of "using tlsv12"
+# https://mmonit.com/wiki/Monit/Gmail
+  set mailserver {{ ansible_role_monit.smtp_server }} port {{ ansible_role_monit.smtp_port }}
+      username "{{ ansible_role_monit.smtp_username }}" password "{{ ansible_role_monit.smtp_password }}"
+      using {{ ansible_role_monit.smtp_protocol }}
+{% else %}
   set mailserver localhost
+{% endif %}
+
 #
 ## By default Monit will drop alert events if no mail servers are available.
 ## If you want to keep the alerts for later delivery retry, you can use the

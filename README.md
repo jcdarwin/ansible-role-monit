@@ -52,6 +52,11 @@ Available variables are listed below, along with default values as found in `def
       host: localhost.vagrant
       user: administrator
       password: whatever
+      smtp_server: smtp.mailgun.org
+      smtp_port: 587
+      smtp_username: whoever@wherever.com
+      smtp_password: whatever
+      smtp_protocol: tlsv12
 
     ansible_role_monit:
       email: whoever@wherever.com
@@ -60,6 +65,11 @@ Available variables are listed below, along with default values as found in `def
       password: "{{ site.password }}"
       domain: "monit.{{ site.host }}"
       host: "{{ site.host }}"
+      smtp_server: "{{ site.smtp_server }}"
+      smtp_port: "{{ site.smtp_port }}"
+      smtp_username: "{{ site.smtp_username }}"
+      smtp_password: "{{ site.smtp_password }}"
+      smtp_protocol: "{{ site.smtp_protocol }}"
 
 Dependencies
 ------------
