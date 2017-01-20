@@ -4,7 +4,7 @@
     ServerAlias {{ ansible_role_monit.domain }}
 
     RewriteEngine on
-    RewriteCond %{HTTP_URI} !^/.well-known/.* [NC]
+    RewriteCond %{REQUEST_URI} !^/.well-known/.* [NC]
     RewriteRule / https://{{ ansible_role_monit.domain }}/ [QSA,NC,R=301]
 
     # Allow certbot access to confirm the domain
