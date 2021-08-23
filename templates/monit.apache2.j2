@@ -1,8 +1,19 @@
 ## Check apache
-   check process apache2 with pidfile /var/run/apache2/apache2.pid
-     start program = "/bin/systemctl start apache2" with timeout 60 seconds
-     stop program  = "/bin/systemctl stop apache2"
-     if failed host {{ ansible_role_monit.host }} port 80 protocol http
+check process apache2 with pidfile /var/run/apache2/apache2.pid
+    start program = "/bin/systemctl start apache2" with timeout 60 seconds
+    stop program  = "/bin/systemctl stop apache2"
+    if failed host {{ ansible_role_monit.host }} port 80 protocol http
         then restart
-     if 5 restarts within 5 cycles
+    if 5 restarts within 5 cycles
         then timeout
+
+    depend apache_bin
+    depend apache_rc
+
+check file apache_bin with path /usr/sbin/apache2
+    group apache
+    include /etc/monit/templates/rootbin
+
+check file apache_rc with path /etc/init.d/apache2
+    group apache
+    include /etc/monit/templates/rootbin

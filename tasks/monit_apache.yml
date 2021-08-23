@@ -44,12 +44,12 @@
 
 - name: Rolling back - Removing our virtualhost
   action: command a2dissite {{ ansible_role_monit.domain }}.conf
-  when: result|failed
+  when: result is failed
   tags: apache
 
 - name: Rolling back - Ending playbook
   action: fail msg="Configuration file is not valid. Please check that before re-running the playbook."
-  when: result|failed
+  when: result is failed
   tags: apache
 
 - name: Create fqdn configuration file (prevent apache error message 'Could not reliably determine the server's fully qualified domain name ...')

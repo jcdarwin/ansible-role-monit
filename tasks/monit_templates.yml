@@ -12,6 +12,15 @@
     mode=0644
   tags: templates
 
+- name: Configure the monit.elasticsearch file
+  action: template
+    src=templates/monit.elasticsearch.j2
+    dest=/etc/monit/conf.d/monit.elasticsearch
+    mode=0644
+  notify:
+    - restart monit
+  tags: templates
+
 - name: Configure the monit.mysql file
   action: template
     src=templates/monit.mysql.j2

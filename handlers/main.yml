@@ -2,13 +2,13 @@
 # handlers file for ansible-role-monit
 
 - name: restart monit
-  sudo: yes
+  become: yes
   service: name=monit state=restarted
 
 - name: restart apache
-  sudo: yes
+  become: yes
   service: name=apache2 state=restarted
 
 - name: reload apache
-  sudo: yes
+  become: yes
   service: name=apache2 state=reloaded
